@@ -1,76 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mn">
 <head>
   <meta charset="UTF-8">
   <title>Lucky Box Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f7f0f0;
-      height: 100vh;
+      background: #f0f8ff;
       display: flex;
       justify-content: center;
       align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    h2 {
+      margin-bottom: 20px;
     }
-    input, button {
+    input {
       padding: 10px;
-      margin-top: 10px;
-      width: 220px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
     }
-    .message {
-      margin-top: 15px;
-      color: red;
-      font-weight: bold;
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <h2>Нэрээ оруулна уу</h2>
+  <input type="text" id="nameInput" placeholder="Таны нэр">
+  <button onclick="goToBox()">Нээх</button>
 
-<div class="container">
-  <h2>Enter Your Name to Open the Lucky Box</h2>
-  <input type="text" id="name" placeholder="Your name">
-  <br>
-  <button onclick="checkName()">Proceed</button>
-  <div id="message" class="message"></div>
-</div>
-
-<script>
-  // Authorized users
-  const authorizedNames = ["DUUREE", "TOM"];
-  const adminName = "ADMIN";
-
-  const userNameInput = document.getElementById("name");
-
-  // Check if already tried (but allow ADMIN)
-  if (localStorage.getItem("hasTried") === "true" && localStorage.getItem("userName") !== adminName) {
-    userNameInput.disabled = true;
-    document.querySelector("button").disabled = true;
-    document.getElementById("message").innerText = "You already tried!";
-  }
-
-  function checkName() {
-    const userName = userNameInput.value.trim().toUpperCase();
-
-    if (authorizedNames.includes(userName) || userName === adminName) {
-      if(userName !== adminName){
-        localStorage.setItem("hasTried", "true");
+  <script>
+    function goToBox() {
+      const name = document.getElementById("nameInput").value.trim().toUpperCase();
+      const allowed = ["DUUREE","TOM","ADMIN"];
+      if(allowed.includes(name)){
+        localStorage.setItem("userName", name);
+        window.location.href = "box.html"; // must match exactly
+      } else {
+        alert("Access denied!");
       }
-      localStorage.setItem("userName", userName);
-      window.location.href = "box.html";
-    } else {
-      userNameInput.disabled = true;
-      document.querySelector("button").disabled = true;
-      document.getElementById("message").innerText = "Access denied!";
     }
-  }
-</script>
-
+  </script>
 </body>
 </html>
