@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Lucky Box</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -24,11 +25,11 @@
     .container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      grid-gap: 25px; /* space between boxes */
+      grid-gap: 25px;
       margin-bottom: 20px;
       width: 90%;
       max-width: 400px;
-      justify-items: center; /* center boxes in their grid cells */
+      justify-items: center;
     }
 
     .box {
@@ -36,7 +37,11 @@
       padding-top: 100%; /* square aspect ratio */
       perspective: 1000px;
       cursor: pointer;
-      position: relative; /* important for flip to stay inside box */
+      position: relative;
+    }
+
+    .box:hover {
+      transform: none; /* remove scaling */
     }
 
     .inner-box {
@@ -51,7 +56,7 @@
     }
 
     .box.flipped .inner-box {
-      transform: rotateY(180deg);
+      transform: rotateY(180deg); /* flip only */
     }
 
     .front, .back {
@@ -118,6 +123,18 @@
     @keyframes confetti-fall {
       0% { transform: translateY(0) rotate(0deg); }
       100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Mobile version: bigger boxes and text */
+    @media (max-width: 480px) {
+      .container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-gap: 20px;
+        max-width: 320px;
+      }
+      .front, .back {
+        font-size: 20px; /* bigger text */
+      }
     }
   </style>
 </head>
