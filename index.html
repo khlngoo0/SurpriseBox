@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Enter Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            background: #f4f4f4;
+        }
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            padding: 10px;
+            width: 200px;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Enter Access Code</h2>
+    <input type="password" id="code" placeholder="Enter code">
+    <br>
+    <button onclick="checkCode()">Submit</button>
+    <div id="error" class="error"></div>
+</div>
+
+<script>
+    function checkCode() {
+        const correctCode = "1234"; // change this
+        const userCode = document.getElementById("code").value;
+
+        if (userCode === correctCode) {
+            window.location.href = "next.html";
+        } else {
+            document.getElementById("error").innerText = "Wrong code!";
+        }
+    }
+</script>
+
+</body>
+</html>
