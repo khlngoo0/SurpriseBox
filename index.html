@@ -1,61 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Enter Code</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-            background: #f4f4f4;
-        }
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input {
-            padding: 10px;
-            width: 200px;
-            margin-top: 10px;
-        }
-        button {
-            margin-top: 15px;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Lucky Box Login</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f0f0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 220px;
+    }
+    .message {
+      margin-top: 15px;
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>Enter Access Code</h2>
-    <input type="password" id="code" placeholder="Enter code">
-    <br>
-    <button onclick="checkCode()">Submit</button>
-    <div id="error" class="error"></div>
+<div class="container">
+  <h2>Enter Your Name to Open the Lucky Box</h2>
+  <input type="text" id="name" placeholder="Your name">
+  <br>
+  <button onclick="checkName()">Proceed</button>
+  <div id="message" class="message"></div>
 </div>
 
 <script>
-    function checkCode() {
-        const correctCode = "1234"; // change this
-        const userCode = document.getElementById("code").value;
+  // Authorized users
+  const authorizedNames = ["DUUREE", "TOM"];
+  const adminName = "ADMIN";
 
-        if (userCode === correctCode) {
-            window.location.href = "next.html";
-        } else {
-            document.getElementById("error").innerText = "Wrong code!";
-        }
+  const userNameInput = document.getElementById("name");
+
+  // Check if already tried (but allow ADMIN)
+  if (localStorage.getItem("hasTried") === "true" && localStorage.getItem("userName") !== adminName) {
+    userNameInput.disabled = true;
+    document.querySelector("button").disabled = true;
+    document.getElementById("message").innerText = "You already tried!";
+  }
+
+  function checkName() {
+    const userName = userNameInput.value.trim().toUpperCase();
+
+    if (authorizedNames.includes(userName) || userName === adminName) {
+      if(userName !== adminName){
+        localStorage.setItem("hasTried", "true");
+      }
+      localStorage.setItem("userName", userName);
+      window.location.href = "box.html";
+    } else {
+      userNameInput.disabled = true;
+      document.querySelector("button").disabled = true;
+      document.getElementById("message").innerText = "Access denied!";
     }
+  }
 </script>
 
 </body>
