@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="mn">
 <head>
@@ -42,7 +43,7 @@
   <script>
     function goToBox() {
       const name = document.getElementById("nameInput").value.trim().toUpperCase();
-      const allowed = ["DUUREE","TOM","ADMIN"];
+      const allowed = ["TOM","ADMIN"];
       if(allowed.includes(name)){
         localStorage.setItem("userName", name);
         window.location.href = "box.html"; // must match exactly
