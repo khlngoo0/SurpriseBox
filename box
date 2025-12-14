@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <title>Lucky Box</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff0f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 150px);
+      grid-gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .box {
+      width: 150px;
+      height: 150px;
+      perspective: 1000px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .inner-box {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      border-radius: 12px;
+      position: absolute;
+    }
+
+    .box.flipped .inner-box {
+      transform: rotateY(180deg);
+    }
+
+    .front, .back {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backface-visibility: hidden;
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .front {
+      background: #ffcc00;
+    }
+
+    .back {
+      background: #90ee90;
+      transform: rotateY(180deg);
+      font-size: 18px;
+    }
+
+    .message {
+      font-size: 20px;
+      font-weight: bold;
+      color: green;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #shareBtn, #resetBtn {
+      display: none;
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: white;
+    }
+
+    #shareBtn {
+      background-color: #4CAF50;
+    }
+
+    #resetBtn {
+      background-color: #f44336;
+      margin-left: 10px;
+    }
+
+    /* Confetti */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #fce18a;
+      top: 0;
+      left: 50%;
+      opacity: 0.7;
+      pointer-events: none;
+      animation: confetti-fall 2s linear forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(400px) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<h2>Сонгох хайрцгаа дарж бэлгээ гаргаарай!</h2>
+
+<div class="container">
+  <div class="box" onclick="openBox(this,0)">
+    <div class="inner-box">
+      <div class="front">Box 1</div>
+      <div class="back"></div>
+    </div>
+  </div>
+  <div class="box" onclick="openBox(this,1)">
+    <div class="inner-box">
+      <div class="front">Box 2</div>
+      <div class="back"></div>
+    </div>
+  </div>
+  <div class="box" onclick="openBox(this,2)">
+    <div class="inner-box">
+      <div class="front">Box 3</div>
+      <div class="back"></div>
+    </div>
+  </div>
+  <div class="box" onclick="openBox(this,3)">
+    <div class="inner-box">
+      <div class="front">Box 4</div>
+      <div class="back"></div>
+    </div>
+  </div>
+</div>
+
+<div id="message" class="message"></div>
+<button id="shareBtn" onclick="sharePrize()">Share Your Prize</button>
+<button id="resetBtn" onclick="resetTest()">Reset for Testing</button>
+
+<script>
+  const userName = localStorage.getItem("userName");
+  const adminName = "ADMIN";
+
+  if (!userName) {
+    alert("Access denied!");
+    window.location.href = "index.html";
+  }
+
+  // Gifts with emojis
+  const giftsMap = {
+    "DUUREE": [
+      {text: "Уулзах эрх", emoji: "🎉"},
+      {text: "Зураг даруулах эрх", emoji: "📸"},
+      {text: "Хоол цуг идэх эрх", emoji: "🍔🍕"},
+      {text: "Цуг кофе шоп орох эрх", emoji: "☕"}
+    ],
+    "TOM": [
+      {text: "Уулзах эрх", emoji: "🎉"},
+      {text: "Зураг даруулах эрх", emoji: "📸"},
+      {text: "Хоол цуг идэх эрх", emoji: "🍔🍕"},
+      {text: "Цуг кофе шоп орох эрх", emoji: "☕"}
+    ],
+    "ADMIN": [
+      {text: "Уулзах эрх", emoji: "🎉"},
+      {text: "Зураг даруулах эрх", emoji: "📸"},
+      {text: "Хоол цуг идэх эрх", emoji: "🍔🍕"},
+      {text: "Цуг кофе шоп орох эрх", emoji: "☕"}
+    ]
+  };
+
+  const gifts = giftsMap[userName];
+
+  let boxOpened = false;
+  let prize = "";
+
+  // Show reset button only for ADMIN
+  if(userName === adminName){
+    document.getElementById("resetBtn").style.display = "inline-block";
+  }
+
+  function createConfetti(){
+    for(let i=0;i<50;i++){
+      const confetti = document.createElement("div");
+      confetti.className="confetti";
+      confetti.style.left = Math.random()*window.innerWidth+"px";
+      confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+      document.body.appendChild(confetti);
+      setTimeout(()=>confetti.remove(),2000);
+    }
+  }
+
+  function openBox(boxElement,index){
+    const backDiv = boxElement.querySelector(".back");
+
+    if(boxOpened && userName !== adminName) return;
+
+    const boxGift = gifts[index];
+    backDiv.innerText = `${boxGift.text} ${boxGift.emoji}`;
+    boxElement.classList.add("flipped");
+    prize = `${boxGift.text} ${boxGift.emoji}`;
+
+    if(userName === adminName){
+      document.getElementById("message").innerText = "Admin view: " + prize;
+    } else {
+      document.getElementById("message").innerText = "Congratulations! You got: " + prize;
+      boxOpened = true;
+
+      const boxes = document.querySelectorAll(".box");
+      boxes.forEach(b => b.style.pointerEvents="none");
+
+      createConfetti();
+    }
+
+    document.getElementById("shareBtn").style.display="inline-block";
+  }
+
+  function sharePrize(){
+    const shareText = `I just opened my lucky box and got: ${prize}! 🎉`;
+    if(navigator.share){
+      navigator.share({text: shareText}).catch(err=>alert("Sharing failed"));
+    } else {
+      prompt("Copy your prize:",shareText);
+    }
+  }
+
+  function resetTest(){
+    localStorage.removeItem("hasTried");
+    localStorage.removeItem("userName");
+    alert("Test reset! You can reload the page to try again.");
+    location.reload();
+  }
+</script>
+
+</body>
+</html>
