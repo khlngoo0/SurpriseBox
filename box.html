@@ -62,16 +62,19 @@
       font-size: 18px;
       text-align: center;
       padding: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     .front {
-      background: #ffcc00;
+      background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+      border: 2px solid #ff6a88;
     }
 
     .back {
-      background: #90ee90;
+      background: linear-gradient(45deg, #a1c4fd, #c2e9fb);
       transform: rotateY(180deg);
       font-size: 18px;
+      color: #333;
     }
 
     .message {
@@ -93,31 +96,23 @@
       color: white;
     }
 
-    #shareBtn {
-      background-color: #4CAF50;
-    }
+    #shareBtn { background-color: #4CAF50; }
+    #resetBtn { background-color: #f44336; margin-left: 10px; }
 
-    #resetBtn {
-      background-color: #f44336;
-      margin-left: 10px;
-    }
-
-    /* Confetti */
     .confetti {
-      position: absolute;
+      position: fixed;
       width: 10px;
       height: 10px;
       background-color: #fce18a;
-      top: 0;
-      left: 50%;
-      opacity: 0.7;
+      opacity: 0.9;
       pointer-events: none;
       animation: confetti-fall 2s linear forwards;
+      border-radius: 50%;
     }
 
     @keyframes confetti-fall {
       0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(400px) rotate(360deg); opacity: 0; }
+      100% { transform: translateY(600px) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -127,28 +122,16 @@
 
 <div class="container">
   <div class="box" onclick="openBox(this,0)">
-    <div class="inner-box">
-      <div class="front">Box 1</div>
-      <div class="back"></div>
-    </div>
+    <div class="inner-box"><div class="front">Box 1</div><div class="back"></div></div>
   </div>
   <div class="box" onclick="openBox(this,1)">
-    <div class="inner-box">
-      <div class="front">Box 2</div>
-      <div class="back"></div>
-    </div>
+    <div class="inner-box"><div class="front">Box 2</div><div class="back"></div></div>
   </div>
   <div class="box" onclick="openBox(this,2)">
-    <div class="inner-box">
-      <div class="front">Box 3</div>
-      <div class="back"></div>
-    </div>
+    <div class="inner-box"><div class="front">Box 3</div><div class="back"></div></div>
   </div>
   <div class="box" onclick="openBox(this,3)">
-    <div class="inner-box">
-      <div class="front">Box 4</div>
-      <div class="back"></div>
-    </div>
+    <div class="inner-box"><div class="front">Box 4</div><div class="back"></div></div>
   </div>
 </div>
 
@@ -160,95 +143,78 @@
   const userName = localStorage.getItem("userName");
   const adminName = "ADMIN";
 
-  if (!userName) {
-    alert("Access denied!");
-    window.location.href = "index.html";
-  }
+  if (!userName) { alert("Access denied!"); window.location.href = "index.html"; }
 
-  // Gifts with emojis
   const giftsMap = {
     "DUUREE": [
-      {text: "Уулзах эрх", emoji: "🎉"},
-      {text: "Зураг даруулах эрх", emoji: "📸"},
-      {text: "Хоол цуг идэх эрх", emoji: "🍔🍕"},
-      {text: "Цуг кофе шоп орох эрх", emoji: "☕"}
+      {text:"Уулзах эрх", emoji:"🎉"},
+      {text:"Зураг даруулах эрх", emoji:"📸"},
+      {text:"Хоол цуг идэх эрх", emoji:"🍔🍕"},
+      {text:"Цуг кофе шоп орох эрх", emoji:"☕"}
     ],
     "TOM": [
-      {text: "Уулзах эрх", emoji: "🎉"},
-      {text: "Зураг даруулах эрх", emoji: "📸"},
-      {text: "Хоол цуг идэх эрх", emoji: "🍔🍕"},
-      {text: "Цуг кофе шоп орох эрх", emoji: "☕"}
+      {text:"Уулзах эрх", emoji:"🎉"},
+      {text:"Зураг даруулах эрх", emoji:"📸"},
+      {text:"Хоол цуг идэх эрх", emoji:"🍔🍕"},
+      {text:"Цуг кофе шоп орох эрх", emoji:"☕"}
     ],
     "ADMIN": [
-      {text: "Уулзах эрх", emoji: "🎉"},
-      {text: "Зураг даруулах эрх", emoji: "📸"},
-      {text: "Хоол цуг идэх эрх", emoji: "🍔🍕"},
-      {text: "Цуг кофе шоп орох эрх", emoji: "☕"}
+      {text:"Уулзах эрх", emoji:"🎉"},
+      {text:"Зураг даруулах эрх", emoji:"📸"},
+      {text:"Хоол цуг идэх эрх", emoji:"🍔🍕"},
+      {text:"Цуг кофе шоп орох эрх", emoji:"☕"}
     ]
   };
 
   const gifts = giftsMap[userName];
-
   let boxOpened = false;
   let prize = "";
 
-  // Show reset button only for ADMIN
-  if(userName === adminName){
-    document.getElementById("resetBtn").style.display = "inline-block";
-  }
+  if(userName === adminName) document.getElementById("resetBtn").style.display="inline-block";
 
   function createConfetti(){
     for(let i=0;i<50;i++){
       const confetti = document.createElement("div");
       confetti.className="confetti";
       confetti.style.left = Math.random()*window.innerWidth+"px";
-      confetti.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+      confetti.style.top = Math.random()*-200 + "px";
+      confetti.style.backgroundColor = `hsl(${Math.random()*360},100%,50%)`;
       document.body.appendChild(confetti);
-      setTimeout(()=>confetti.remove(),2000);
+      setTimeout(()=>confetti.remove(),3000);
     }
   }
 
-  function openBox(boxElement,index){
-    const backDiv = boxElement.querySelector(".back");
-
+  function openBox(box,index){
+    const back = box.querySelector(".back");
     if(boxOpened && userName !== adminName) return;
 
-    const boxGift = gifts[index];
-    backDiv.innerText = `${boxGift.text} ${boxGift.emoji}`;
-    boxElement.classList.add("flipped");
-    prize = `${boxGift.text} ${boxGift.emoji}`;
+    const gift = gifts[index];
+    back.innerText = `${gift.text} ${gift.emoji}`;
+    box.classList.add("flipped");
+    prize = `${gift.text} ${gift.emoji}`;
 
     if(userName === adminName){
       document.getElementById("message").innerText = "Admin view: " + prize;
     } else {
       document.getElementById("message").innerText = "Congratulations! You got: " + prize;
       boxOpened = true;
-
-      const boxes = document.querySelectorAll(".box");
-      boxes.forEach(b => b.style.pointerEvents="none");
-
+      document.querySelectorAll(".box").forEach(b=>b.style.pointerEvents="none");
       createConfetti();
     }
-
     document.getElementById("shareBtn").style.display="inline-block";
   }
 
   function sharePrize(){
     const shareText = `I just opened my lucky box and got: ${prize}! 🎉`;
-    if(navigator.share){
-      navigator.share({text: shareText}).catch(err=>alert("Sharing failed"));
-    } else {
-      prompt("Copy your prize:",shareText);
-    }
+    if(navigator.share) navigator.share({text: shareText}).catch(e=>alert("Sharing failed"));
+    else prompt("Copy your prize:", shareText);
   }
 
   function resetTest(){
-    localStorage.removeItem("hasTried");
     localStorage.removeItem("userName");
-    alert("Test reset! You can reload the page to try again.");
+    alert("Test reset! Reload page to try again.");
     location.reload();
   }
 </script>
-
 </body>
 </html>
